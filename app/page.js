@@ -31,7 +31,7 @@ export default function Page() {
           <br className="max-md:hidden" /> AI-Powered Visualizations
         </h1>
         <p className="mt-6 text-lg text-gray-600 sm:text-xl text-center">
-          Vizzy is a powerful platform that helps you get to know your audience
+          Visuali is a powerful platform that helps you get to know your audience
           better.
         </p>
 
