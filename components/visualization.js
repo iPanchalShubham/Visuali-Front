@@ -19,6 +19,7 @@ import {
   Tooltip,
 } from "chart.js/auto";
 import CommentsDrawer from "./commentsDrawer";
+import { Toaster } from "react-hot-toast";
 
 // const data = [
 //   {
@@ -228,7 +229,6 @@ function Visualization({ data }) {
     },
   };
   const chartRef = useRef(null);
-  const chartRef2 = useRef(null);
   const printElementAtEvent = (element) => {
     if (!element.length) return;
     const { datasetIndex, index } = element[0];
@@ -242,16 +242,13 @@ function Visualization({ data }) {
 
   const click = (event) => {
     const { current: chart } = chartRef;
-    const { current: chart2 } = chartRef2;
 // console.log(chartRef)
 console.log(chart)
 
-    if (chart) {
-      printElementAtEvent(getElementAtEvent(chart, event));
-
-    } else if (chart2) {
-      printElementAtEvent(getElementAtEvent(chart2, event));
-    }
+    if (!chart) {
+      return 
+    } 
+    printElementAtEvent(getElementAtEvent(chart, event));
   };
 
   const [drawerState, setDrawerState] = useState(false);
@@ -260,6 +257,7 @@ console.log(chart)
   };
   return (
     <div className={`${drawerState ? "overflow-y-auto" : "overflow-hidden"} `}>
+    
       <div className="relative  bg-gray-100">
         <CommentsDrawer
           drawerHandler={drawerHandler}
@@ -274,8 +272,6 @@ console.log(chart)
                   options={options}
                   data={userData}
                   type="pie"
-                  ref={chartRef2}
-                  onClick={(e) => click(e)}
                 />
               </div>
               <div className="max-w-3xl rounded p-5 bg-gradient-to-tr shadow from-gray-50 via-white to-gray-50">
@@ -283,8 +279,6 @@ console.log(chart)
                   options={options}
                   data={userData}
                   type="radar"
-                  ref={chartRef}
-                  onClick={(e) => click(e)}
                 />
               </div>
             </div>
@@ -303,8 +297,6 @@ console.log(chart)
               options={options}
               data={userData}
               type="line"
-              ref={chartRef}
-              onClick={(e) => click(e)}
             />
           </div>
         </div>

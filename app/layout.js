@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
             </div>
           </div>
           <a className="btn btn-ghost normal-case text-xl items-center flex flex-row space-x-5 pl-5">
-            VIZZY
+            VISUALI
             <span className="bg-pink-600  p-1 rounded-full ml-0.5 mt-0.5" />
           </a>
 

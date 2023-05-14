@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from "react";
 import Visualization from "../../components/visualization.js";
 import Loading from "@/components/loading.js";
+import { Toaster, toast } from "react-hot-toast";
 
 function Page({ params }) {
   const id = params.vizId;
   const [data, setData] = useState();
   const fetchEmotions = async () => {
-    const res = await fetch("http://localhost:5000/video/viz", {
+    const res = await fetch("https://aihackfest-back.onrender.com/video/viz", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -17,7 +18,12 @@ function Page({ params }) {
       }),
     });
     const json = await res.json();
-    setData(json);
+    if (json.status === 200) {
+      toast.success(json.message);
+      setData(json);
+    } else {
+      toast.error(json.message);
+    }
   };
   useEffect(() => {
     fetchEmotions();
@@ -26,9 +32,13 @@ function Page({ params }) {
   return (
     <div>
       {data ? (
-        <Visualization data={data} />
+        <>
+          <Toaster />
+          <Visualization data={data} />{" "}
+        </>
       ) : (
-        <Loading/>      )}
+        <Loading />
+      )}
     </div>
   );
 }
