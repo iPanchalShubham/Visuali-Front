@@ -1,5 +1,5 @@
 "use-client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Bar,
   Chart,
@@ -19,8 +19,9 @@ import {
   Tooltip,
 } from "chart.js/auto";
 import CommentsDrawer from "./commentsDrawer";
-import { Toaster } from "react-hot-toast";
 
+import VideoStats from "./videoStats";
+import { Toaster, toast } from "react-hot-toast";
 // const data = [
 //   {
 //     emotionName: "neutral",
@@ -181,7 +182,22 @@ ChartJS.register(
   LineElement,
   Filler
 );
-function Visualization({ data }) {
+function Visualization({ data, videoInfoData }) {
+  useEffect(() => {
+    if(data?.status === 200){
+      toast.success(() => (
+        <span className="capitalize">
+           <b>{data.message} </b>
+        </span>
+      ),{duration: 4000})
+    }else{
+      toast.error(() => (
+        <span className="capitalize">
+           <b>{data.message} </b> 
+        </span>
+      ),{duration: 4000})
+    }
+  },[])
   const [userData, setUserData] = useState({
     labels: data?.data.map((data) => data.emotionName),
     datasets: [
@@ -190,14 +206,12 @@ function Visualization({ data }) {
         fill: true,
         data: data?.data.map((data) => data.intensity),
         backgroundColor: [
-          "rgba(66,133,244,0.7)",
-          "rgba(219,68,55,0.7)",
-          "rgba(244,180,0,0.7)",
-          "rgba(15,157,88,0.7)",
-          "rgba(255,0,255,0.7)",
+          "rgb(51, 153, 255)",
+          "rgb(240 0 184)",
+          "rgba(255,226,0,1.00)",
+          "rgb(51, 204, 51)",
+          "rgb(153, 51, 255)",
         ],
-        borderColor: "black",
-        borderWidth: 1,
       },
       // {
       //   label: "Frequency",
@@ -242,12 +256,12 @@ function Visualization({ data }) {
 
   const click = (event) => {
     const { current: chart } = chartRef;
-// console.log(chartRef)
-console.log(chart)
+    // console.log(chartRef)
+    console.log(chart);
 
     if (!chart) {
-      return 
-    } 
+      return;
+    }
     printElementAtEvent(getElementAtEvent(chart, event));
   };
 
@@ -257,32 +271,27 @@ console.log(chart)
   };
   return (
     <div className={`${drawerState ? "overflow-y-auto" : "overflow-hidden"} `}>
-    
       <div className="relative  bg-gray-100">
         <CommentsDrawer
           drawerHandler={drawerHandler}
           drawerState={drawerState}
           insight={insight}
         />
+        <Toaster/>
         <div className="p-5">
-          <div className="flex space-x-10">
+          <div className="flex justify-center my-5">
+            <VideoStats videoInfoData={videoInfoData} />
+          </div>
+          <div className="flex md:flex-row flex-col md:space-x-10 gap-y-10">
             <div className="max-w-6xl space-y-10">
-              <div className="max-w-3xl rounded p-5 bg-gradient-to-tr shadow from-gray-50 via-white to-gray-50">
-                <Pie
-                  options={options}
-                  data={userData}
-                  type="pie"
-                />
+              <div className="max-w-3xl rounded p-5 shadow bg-white">
+                <Pie options={options} data={userData} type="pie" />
               </div>
-              <div className="max-w-3xl rounded p-5 bg-gradient-to-tr shadow from-gray-50 via-white to-gray-50">
-                <Chart
-                  options={options}
-                  data={userData}
-                  type="radar"
-                />
+              <div className="max-w-3xl rounded p-5  bg-white">
+                <Chart options={options} data={userData} type="radar" />
               </div>
             </div>
-            <div className="flex justify-center w-full  rounded p-5 bg-gradient-to-tr shadow from-gray-50 via-white to-gray-50">
+            <div className="flex justify-center w-full  heigh rounded p-5 shadow bg-white">
               <Chart
                 options={options}
                 data={userData}
@@ -292,12 +301,8 @@ console.log(chart)
               />
             </div>
           </div>
-          <div className=" flex justify-center mt-10 w-full rounded p-5 bg-gradient-to-tr shadow from-gray-50 via-white to-gray-50">
-            <Line
-              options={options}
-              data={userData}
-              type="line"
-            />
+          <div className=" flex justify-center mt-10 w-full rounded md:p-5 p-2 shadow  bg-white">
+            <Line options={options} data={userData} type="line" />
           </div>
         </div>
       </div>

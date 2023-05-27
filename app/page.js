@@ -21,10 +21,10 @@ export default function Page() {
     }
   };
   return (
-    <main className="bg-white mt-32">
+    <main className="bg-white h-screen mt-32 mx-5 md:mx-0">
       <div className="w-full text-transparent text-center">
         <h1
-          className="text-5xl font-extrabold leading-[1.3] text-black sm:text-4xl
+          className="md:text-5xl text-4xl font-extrabold leading-[1.3] text-black sm:text-4xl
  text-center "
         >
           Discover Insights

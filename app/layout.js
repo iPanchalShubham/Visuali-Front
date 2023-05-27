@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${inter.className} bg-white`}>
-        <div className="navbar sticky top-0 bg-base-100 shadow-lg z-50">
+        <div className="navbar sticky top-0  shadow-lg z-50 bg-white">
           <div className="navbar-start">
             <div className="dropdown">
               <label tabIndex={0} className="btn btn-ghost ">
@@ -38,8 +38,8 @@ export default function RootLayout({ children }) {
             <span className="bg-pink-600  p-1 rounded-full ml-0.5 mt-0.5" />
           </a>
 
-          <div className="navbar-end">
-            <a className="btn bg-gradient-to-r border-none from-red-400 to-pink-600">
+          <div className="navbar-end invisible">
+            <a className="btn bg-gradient-to-r border-none from-red-400 to-pink-600 ">
               Get started
               <svg
                 xmlns="http://www.w3.org/2000/svg"
