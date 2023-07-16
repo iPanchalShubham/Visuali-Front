@@ -4,13 +4,11 @@ import Visualization from "../../components/visualization.js";
 import Loading from "@/components/loading.js";
 
 import axios from "axios";
-import VideoDetails from "@/components/videoDetails.js";
-
 function Page({ params }) {
   const id = params.vizId;
   const [data, setData] = useState();
   const [videoInfoData, setVideoInfoData] = useState();
-
+  const [loadingData, setLoadingData] = useState({loadingMessage:"",loadingValue:0});
   const videoInfoRequestData = {
     method: "GET",
     url: "https://youtube138.p.rapidapi.com/video/details/",
@@ -27,27 +25,63 @@ function Page({ params }) {
 
   const fetchVideoData = async () => {
     const response = await axios.request(videoInfoRequestData);
-    console.log(response.data);
     setVideoInfoData(response.data);
   };
   const fetchEmotions = async () => {
-    const res = await fetch("https://aihackfest-back.onrender.com/video/viz", {
+    const res = await fetch("http://localhost:5000/video/viz", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: id,
-      }),
-    });
-    const json = await res.json();
-    if (json.status === 200) {
-      
-      setData(json);
-    } else {
-      alert("Either the video contains too many comments or the video does not exist. Please try again later.");
-    }
+        id: id
+      })
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const reader = response.body.getReader();
+
+        async function readStream() {
+          return await reader.read().then(({ done, value }) => {
+            if (done) {
+              console.log("Stream reading complete");
+              return;
+            }
+
+            const chunk = new TextDecoder("utf-8").decode(value);
+            console.log("Received raw chunk:", chunk);
+
+            const parsedChunk = JSON.parse(chunk);
+            console.log("Received chunk:", parsedChunk);
+            // Process the received chunk
+            if (parsedChunk?.type == "loading") {
+              setLoadingData({loadingMessage:parsedChunk.message,loadingValue:parsedChunk.value});
+            } else {
+              setData(parsedChunk);
+            }
+            // Continue reading the stream
+            return readStream();
+          });
+        }
+
+        return readStream();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        // Handle any errors that occur during the request
+      });
+    
+    // if (json.status === 200) {
+    //   setData(json);
+    // } else {
+    //   alert(
+    //     "Either the video contains too many comments or the video does not exist. Please try again later."
+    //   );
+    // }
   };
+
   useEffect(() => {
     fetchVideoData();
     fetchEmotions();
@@ -57,12 +91,16 @@ function Page({ params }) {
     <div>
       {data && videoInfoData ? (
         <>
-          
           <Visualization data={data} videoInfoData={videoInfoData} />{" "}
         </>
       ) : (
         <>
-          <Loading videoInfoData={videoInfoData} />
+          <Loading
+            videoInfoData={videoInfoData}
+            loadingMessage={loadingData.loadingMessage}
+            loadingValue={loadingData.loadingValue}
+
+          />
         </>
       )}
     </div>

@@ -257,7 +257,7 @@ function Visualization({ data, videoInfoData }) {
   const click = (event) => {
     const { current: chart } = chartRef;
     // console.log(chartRef)
-    console.log(chart);
+  
 
     if (!chart) {
       return;
