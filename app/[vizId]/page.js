@@ -28,7 +28,7 @@ function Page({ params }) {
     setVideoInfoData(response.data);
   };
   const fetchEmotions = async () => {
-    const res = await fetch("http://localhost:5000/video/viz", {
+    const res = await fetch("https://aihackfest-back.onrender.com/video/viz", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
