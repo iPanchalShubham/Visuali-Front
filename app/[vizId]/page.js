@@ -27,6 +27,7 @@ function Page({ params }) {
     const response = await axios.request(videoInfoRequestData);
     setVideoInfoData(response.data);
   };
+  
   const fetchEmotions = async () => {
     const res = await fetch("https://aihackfest-back.onrender.com/video/viz", {
       method: "POST",
