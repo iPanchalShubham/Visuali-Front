@@ -8,7 +8,10 @@ function Page({ params }) {
   const id = params.vizId;
   const [data, setData] = useState();
   const [videoInfoData, setVideoInfoData] = useState();
-  const [loadingData, setLoadingData] = useState({loadingMessage:"",loadingValue:0});
+  const [loadingData, setLoadingData] = useState({
+    loadingMessage: "",
+    loadingValue: 0,
+  });
   const videoInfoRequestData = {
     method: "GET",
     url: "https://youtube138.p.rapidapi.com/video/details/",
@@ -27,7 +30,6 @@ function Page({ params }) {
     const response = await axios.request(videoInfoRequestData);
     setVideoInfoData(response.data);
   };
-  
   const fetchEmotions = async () => {
     const res = await fetch("https://aihackfest-back.onrender.com/video/viz", {
       method: "POST",
@@ -35,8 +37,8 @@ function Page({ params }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: id
-      })
+        id: id,
+      }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -50,15 +52,21 @@ function Page({ params }) {
               console.log("Stream reading complete");
               return;
             }
-
+            // Remove the 'data: ' prefix and parse the remaining part as JSON
             const chunk = new TextDecoder("utf-8").decode(value);
             console.log("Received raw chunk:", chunk);
 
-            const parsedChunk = JSON.parse(chunk);
+            const jsonStart = chunk.indexOf("{");
+            const jsonStr = chunk.slice(jsonStart);
+            const parsedChunk = JSON.parse(jsonStr);
             console.log("Received chunk:", parsedChunk);
+
             // Process the received chunk
             if (parsedChunk?.type == "loading") {
-              setLoadingData({loadingMessage:parsedChunk.message,loadingValue:parsedChunk.value});
+              setLoadingData({
+                loadingMessage: parsedChunk.message,
+                loadingValue: parsedChunk.value,
+              });
             } else {
               setData(parsedChunk);
             }
@@ -70,10 +78,10 @@ function Page({ params }) {
         return readStream();
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error("error:", error);
         // Handle any errors that occur during the request
       });
-    
+
     // if (json.status === 200) {
     //   setData(json);
     // } else {
@@ -100,7 +108,6 @@ function Page({ params }) {
             videoInfoData={videoInfoData}
             loadingMessage={loadingData.loadingMessage}
             loadingValue={loadingData.loadingValue}
-
           />
         </>
       )}
